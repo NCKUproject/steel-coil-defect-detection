@@ -1,0 +1,22 @@
+# ---- Ruff (linter + pydocstyle) ----
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# 開啟：pycodestyle(E/W), pyflakes(F), isort(I), pydocstyle(D)
+select = ["E", "F", "W", "I", "D"]
+# 允許 Google 風格：摘要同一行；註解前不強制空白行
+ignore = ["D203", "D213"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+# ---- Black (formatter) ----
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+# ---- isort (由 ruff 取代，保留參考) ----
+[tool.isort]
+profile = "black"

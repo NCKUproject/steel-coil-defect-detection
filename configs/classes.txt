@@ -1,0 +1,10 @@
+1_hole
+2_blackscratch_long
+3_whitescratch
+4_fold
+5_dent
+6_bulge
+7_dirt
+8_insect
+9_edge
+10_weldpoint

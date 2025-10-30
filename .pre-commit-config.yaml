@@ -1,0 +1,25 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+        args: ["--maxkb=5120"]
+      - id: check-yaml
+      - id: check-json
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format
+  # Custom hook: forbid trailing comments except whitelist
+  - repo: local
+    hooks:
+      - id: forbid-trailing-comments
+        name: Forbid trailing comments (except noqa/nosec/URL)
+        entry: python scripts/forbid_trailing_comments.py
+        language: python
+        types: [python]

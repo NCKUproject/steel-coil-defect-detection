@@ -1,0 +1,51 @@
+# ---- Python general ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg-info/
+.DS_Store
+.env
+.venv/
+env/
+venv/
+.ipynb_checkpoints/
+*.log
+
+# ---- Data ----
+data/raw/
+data/tmp/
+data/cache/
+*.csv
+*.zip
+*.tar
+*.tar.gz
+*.xz
+*.npy
+*.npz
+
+# ---- Model weights ----
+*.pt
+*.pth
+*.onnx
+*.h5
+*.ckpt
+
+# ---- Outputs ----
+outputs/
+runs/
+checkpoints/
+results/
+logs/
+wandb/
+tensorboard/
+
+# ---- IDE & system ----
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+
+# ---- Temporary ----
+tmp/
+temp/
