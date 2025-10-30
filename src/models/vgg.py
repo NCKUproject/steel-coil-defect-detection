@@ -17,22 +17,21 @@ def _load_vgg16(pretrained: bool) -> nn.Module:
         except AttributeError:
             model = models.vgg16_bn(pretrained=True)
     else:
-        model = (
-            models.vgg16_bn(weights=None)
-            if hasattr(models, "VGG16_BN_Weights")
-            else models.vgg16_bn(pretrained=False)
-        )
+        if hasattr(models, "VGG16_BN_Weights"):
+            model = models.vgg16_bn(weights=None)
+        else:
+            model = models.vgg16_bn(pretrained=False)
     return model
 
 
 def _build_classifier(
     in_features: int, num_classes: int, hidden: int, dropout: float
 ) -> nn.Sequential:
-    """Return a compact classifier head for VGG features."""
+    """Return a compact classifier head starting from the flattened feature size."""
     return nn.Sequential(
         nn.Linear(in_features, hidden),
         nn.ReLU(inplace=True),
-        nn.Dropout(dropout),
+        nn.Dropout(p=dropout),
         nn.Linear(hidden, num_classes),
     )
 
@@ -47,12 +46,9 @@ def build_vgg16(
 ) -> nn.Module:
     """Build a VGG16-BN model with a small classifier head.
 
-    Args:
-        num_classes: Number of classes.
-        pretrained: Whether to load ImageNet weights.
-        freeze_features: If True, freeze convolutional feature extractor.
-        dropout: Dropout rate used in the classifier head.
-        classifier_hidden: Hidden dimension of the classifier head.
+    Notes:
+        The original VGG16-BN classifier expects a flattened input of 25088
+        elements (7x7x512). The custom head must start from this size.
     """
     model = _load_vgg16(pretrained=pretrained)
 
@@ -60,6 +56,14 @@ def build_vgg16(
         for p in model.features.parameters():
             p.requires_grad = False
 
-    in_features = model.classifier[-1].in_features
-    model.classifier = _build_classifier(in_features, num_classes, classifier_hidden, dropout)
+    # The first linear layer of the original classifier takes 25088 inputs.
+    in_features = model.classifier[0].in_features
+
+    # Replace the entire classifier with a compact head that starts at 25088.
+    model.classifier = _build_classifier(
+        in_features=in_features,
+        num_classes=num_classes,
+        hidden=classifier_hidden,
+        dropout=dropout,
+    )
     return model
