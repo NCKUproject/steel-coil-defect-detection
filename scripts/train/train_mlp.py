@@ -50,6 +50,9 @@ def evaluate(
 
 def main() -> None:
     """Train the MLP model using parameters from configs/base.yaml and save artifacts."""
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Training on device: {device}")
+
     set_global_seed(RANDOM_SEED)
 
     cfg = yaml.safe_load(open("configs/base.yaml", "r", encoding="utf-8"))

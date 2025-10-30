@@ -40,6 +40,7 @@ steel-coil-defect-detection/
 ## 環境建置
 
 ### Clone 專案
+
 ```powershell
 git clone https://github.com/NCKUproject/steel-coil-defect-detection.git
 cd steel-coil-defect-detection
@@ -48,15 +49,19 @@ cd steel-coil-defect-detection
 ---
 
 ### 啟用 PowerShell 腳本執行權限（Windows）
+
 PowerShell 預設禁止執行虛擬環境腳本。請執行：
+
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 ```
+
 > 此設定為臨時有效，重開機後需重新執行。
 
 ---
 
 ### 建立虛擬環境
+
 ```powershell
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -68,15 +73,19 @@ python -m pip install -U pip
 ### 安裝 PyTorch
 
 - 若有 **NVIDIA GPU (CUDA 12.1)**：
+
   ```powershell
   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
   ```
+
 - 若使用 **CPU**：
+
   ```powershell
   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
   ```
 
 驗證：
+
 ```powershell
 python - << 'PY'
 import torch, torchvision
@@ -89,6 +98,7 @@ PY
 ---
 
 ### 安裝其他依賴
+
 ```powershell
 pip install -r requirement.txt
 ```
@@ -96,6 +106,7 @@ pip install -r requirement.txt
 ---
 
 ### 初始化 pre-commit（程式碼風格檢查）
+
 ```powershell
 pre-commit install
 python -m pre_commit run --all-files
@@ -106,6 +117,12 @@ python -m pre_commit run --all-files
 ## 資料準備流程
 
 ### 將原始資料解壓縮至 `data/raw/`
+
+```bash
+# 放壓縮檔在 data\raw\Simple_chinastell_data.zip
+Expand-Archive -Force data\raw\Simple_chinastell_data.zip data\raw
+```
+
 ```
 data/raw/
 ├── 1_hole/
@@ -117,10 +134,13 @@ data/raw/
 ---
 
 ### 產生訓練與測試集（只需一次）
+
 ```powershell
 python -m src.dataprep.split
 ```
+
 輸出：
+
 ```
 data/splits/train.csv
 data/splits/test.csv
@@ -129,10 +149,13 @@ data/splits/test.csv
 ---
 
 ### 檢查資料（可選）
+
 ```powershell
 python -m src.dataprep.sanity_check
 ```
+
 輸出：
+
 ```
 outputs/preview/train_batch_preview.png
 ```
@@ -142,14 +165,18 @@ outputs/preview/train_batch_preview.png
 ## 模型訓練與評估
 
 ### MLP 模型
+
 1. 編輯 `configs/base.yaml`：
+
    ```yaml
    model:
      name: mlp
    data:
      image_size: 128
    ```
+
 2. 執行：
+
    ```powershell
    python -m scripts.train.train_mlp
    python -m scripts.eval.eval_mlp
@@ -158,14 +185,18 @@ outputs/preview/train_batch_preview.png
 ---
 
 ### VGG16 模型
+
 1. 編輯 `configs/base.yaml`：
+
    ```yaml
    model:
      name: vgg16
    data:
      image_size: 224
    ```
+
 2. 執行：
+
    ```powershell
    python -m scripts.train.train_vgg
    python -m scripts.eval.eval_vgg
@@ -174,6 +205,7 @@ outputs/preview/train_batch_preview.png
 ---
 
 ## 結果輸出
+
 | 類別 | 路徑 |
 |------|------|
 | 模型 | `outputs/models/best_mlp.pt`、`best_vgg16.pt` |
@@ -184,6 +216,7 @@ outputs/preview/train_batch_preview.png
 ---
 
 ## 總安裝步驟
+
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 py -3.11 -m venv .venv
@@ -193,9 +226,39 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 pip install -r requirement.txt
 pre-commit install
 python -m pre_commit run --all-files
+Expand-Archive -Force data\raw\Simple_chinastell_data.zip data\raw
 python -m src.dataprep.split
 python -m scripts.train.train_mlp
 python -m scripts.eval.eval_mlp
 ```
 
 ---
+
+## pre-commit 檢查機制
+
+- 檢查檔案格式：`pre-commit run --all-files`
+- 推code
+
+```bash
+git add .
+git commit -m "commit message"
+git push
+```
+
+- 如果用vscode內建的source control，可以設定自動執行 pre-commit
+- 建立`.vscode/settings.json`，輸入以下內容
+
+```json
+{
+    "python.defaultInterpreterPath": ".venv\\Scripts\\python.exe",
+    "terminal.integrated.env.windows": {
+        "VIRTUAL_ENV": "${workspaceFolder}\\.venv",
+        "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
+    },
+    "python.terminal.activateEnvironment": true,
+    "git.env": {
+        "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
+    }
+}
+
+```

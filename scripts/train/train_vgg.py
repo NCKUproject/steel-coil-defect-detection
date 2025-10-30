@@ -46,6 +46,9 @@ def evaluate(
 
 def main() -> None:
     """Train VGG16 using config values and save artifacts."""
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Training on device: {device}")
+
     cfg = yaml.safe_load(open("configs/base.yaml", "r", encoding="utf-8"))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
