@@ -1,0 +1,13 @@
+# === Core Dependencies ===
+numpy
+pandas
+pyyaml
+matplotlib
+scikit-learn
+Pillow
+
+# === Development & Linting ===
+pre-commit
+ruff
+black
+isort

@@ -13,9 +13,9 @@ venv/
 *.log
 
 # ---- Data ----
-data/raw/
-data/tmp/
-data/cache/
+data/raw/*
+data/split/*
+data/zip_file/*
 *.csv
 *.zip
 *.tar
