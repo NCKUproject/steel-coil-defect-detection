@@ -22,8 +22,6 @@ from src.utils.seed import set_global_seed
 # ensure @register("mlp")
 importlib.import_module("src.models.mlp")
 
-importlib.import_module("src.models.mlp")
-
 
 def evaluate(
     model: nn.Module, loader: torch.utils.data.DataLoader, device: torch.device

@@ -26,8 +26,8 @@ model:
 
   # MLP options (used only when name == "mlp")
   mlp:
-    hidden: [512, 256]
-    dropout: 0.5
+    hidden: [1024, 512, 256]
+    dropout: 0.3
 
   # VGG16 options (used only when name == "vgg16")
   vgg16:
@@ -48,7 +48,7 @@ train:
   optimizer:
     # adam / adamw / sgd  (your optimizer factory supports adam & sgd; we added adamw compatibility if needed)
     name: adamw
-    lr: 1e-4
+    lr: 3e-4       # 或 1e-3 都可以試試
     weight_decay: 1e-4
     betas: [0.9, 0.999]   # used by Adam/AdamW
     momentum: 0.9         # used by SGD
